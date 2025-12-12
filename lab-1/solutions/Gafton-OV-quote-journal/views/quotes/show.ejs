@@ -1,0 +1,23 @@
+<%- include("../partials/head", { title: "Quote" }) %>
+
+<h1>Quote</h1>
+
+<div class="card">
+  <div class="quote">“<%= quote.text %>”</div>
+  <div class="meta">— <%= quote.author %></div>
+  <div class="date"><%= new Date(quote.createdAt).toLocaleString() %></div>
+
+  <div class="actions">
+    <a class="btn btn--ghost" href="/quotes/<%= quote.id %>/edit">Edit</a>
+
+    <form method="POST" action="/quotes/<%= quote.id %>?_method=DELETE">
+      <button class="btn btn--danger" type="submit">Delete</button>
+    </form>
+
+    <a class="btn" href="/quotes">Back</a>
+  </div>
+</div>
+
+</main>
+</body>
+</html>

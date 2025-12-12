@@ -17,7 +17,7 @@ Pentru primul laborator, va trebui să realizați una dintre aplicațiile de mai
 15. **Dosar Medical Animale**
 16. **Listă de Cadouri**(Bubucea Rodica)
 17. **Jurnal de Întreținere Auto**
-18. **Colecționar de Citate**
+18. **Colecționar de Citate** (Gafton Otilia-Victoria, IA2302)
 19. **Manager de Adrese (Contacte)**
 20. **Urmăritor de Timp (Time-Tracker)**
 21. **Aplicație de Carduri Flash**
