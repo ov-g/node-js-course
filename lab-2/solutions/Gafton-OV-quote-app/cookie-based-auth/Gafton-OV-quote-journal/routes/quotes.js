@@ -6,6 +6,7 @@ import {
   updateQuote,
   deleteQuote
 } from "../services/quotesApi.js";
+import { requireLogin } from "../middleware/requireLogin.js";
 
 const router = express.Router();
 
@@ -27,12 +28,12 @@ router.get("/", async (req, res, next) => {
 });
 
 // NEW FORM
-router.get("/new", (req, res) => {
+router.get("/new", requireLogin, (req, res) => {
   res.render("quotes/new", { errors: [], form: { text: "", author: "" } });
 });
 
 // CREATE
-router.post("/", async (req, res, next) => {
+router.post("/", requireLogin, async (req, res, next) => {
   try {
     const { text, author } = req.body;
     const errors = validateQuote({ text, author });
@@ -64,7 +65,7 @@ router.get("/:id", async (req, res, next) => {
 });
 
 // EDIT FORM
-router.get("/:id/edit", async (req, res, next) => {
+router.get("/:id/edit", requireLogin, async (req, res, next) => {
   try {
     const quote = await getQuoteById(req.params.id);
     res.render("quotes/edit", { quote, errors: [] });
@@ -74,7 +75,7 @@ router.get("/:id/edit", async (req, res, next) => {
 });
 
 // UPDATE
-router.put("/:id", async (req, res, next) => {
+router.put("/:id", requireLogin, async (req, res, next) => {
   try {
     const { text, author } = req.body;
     const errors = validateQuote({ text, author });
@@ -101,7 +102,7 @@ router.put("/:id", async (req, res, next) => {
 });
 
 // DELETE
-router.delete("/:id", async (req, res, next) => {
+router.delete("/:id", requireLogin, async (req, res, next) => {
   try {
     await deleteQuote(req.params.id);
     res.redirect("/quotes");

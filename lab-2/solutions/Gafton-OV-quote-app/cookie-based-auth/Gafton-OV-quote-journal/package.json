@@ -3,19 +3,21 @@
   "name": "quote-journal",
   "version": "1.0.0",
   "main": "index.js",
-"scripts": {
-  "dev": "concurrently \"npm:dev:api\" \"npm:dev:web\"",
-  "dev:api": "json-server --watch db.json --port 3001",
-  "dev:web": "nodemon app.js",
-  "start": "node app.js"
-},
+  "scripts": {
+    "dev": "concurrently \"npm:dev:api\" \"npm:dev:web\"",
+    "dev:api": "json-server --watch db.json --port 3001",
+    "dev:web": "nodemon app.js",
+    "start": "node app.js"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "bcryptjs": "^3.0.3",
     "ejs": "^3.1.10",
     "express": "^5.2.1",
+    "express-session": "^1.18.2",
     "method-override": "^3.0.0"
   },
   "devDependencies": {
