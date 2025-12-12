@@ -1,0 +1,64 @@
+<%- include("../partials/head", { title: "JWT Register" }) %>
+
+<h1>JWT Register</h1>
+
+<div id="msg" class="errors" style="display:none"></div>
+
+<form id="registerForm" class="form">
+  <label>
+    Name
+    <input name="name" />
+  </label>
+
+  <label>
+    Email
+    <input name="email" type="email" required />
+  </label>
+
+  <label>
+    Password
+    <input name="password" type="password" required />
+  </label>
+
+  <button class="btn" type="submit">Create account</button>
+  <a class="btn btn--ghost" href="/jwt/login">Back to login</a>
+</form>
+
+<script type="module">
+  const form = document.getElementById("registerForm");
+  const msg = document.getElementById("msg");
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    msg.style.display = "none";
+    msg.textContent = "";
+
+    const formData = new FormData(form);
+    const payload = {
+      name: formData.get("name"),
+      email: formData.get("email"),
+      password: formData.get("password")
+    };
+
+    const res = await fetch("/api/auth/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+
+    const data = await res.json().catch(() => null);
+
+    if (!res.ok) {
+      msg.style.display = "block";
+      msg.textContent = (data && data.message) ? data.message : "Registration failed";
+      return;
+    }
+
+    // after register -> login
+    location.href = "/jwt/login";
+  });
+</script>
+
+</main>
+</body>
+</html>

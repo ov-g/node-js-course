@@ -1,0 +1,29 @@
+<%- include("../partials/head", { title: "New Quote" }) %>
+
+<h1>Add a quote</h1>
+
+<% if (errors.length) { %>
+  <div class="errors">
+    <ul>
+      <% errors.forEach(e => { %><li><%= e %></li><% }) %>
+    </ul>
+  </div>
+<% } %>
+
+<form class="form" method="POST" action="/quotes">
+  <label>
+    Quote
+    <textarea name="text" rows="4" required><%= form.text %></textarea>
+  </label>
+
+  <label>
+    Author
+    <input name="author" required value="<%= form.author %>" />
+  </label>
+
+  <button class="btn" type="submit">Save</button>
+</form>
+
+</main>
+</body>
+</html>

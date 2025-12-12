@@ -1,0 +1,26 @@
+{
+  "quotes": [
+    {
+      "id": "1",
+      "text": "Simplicity is the soul of efficiency.",
+      "author": "Austin Freeman",
+      "createdAt": "2025-12-12T10:00:00.000Z"
+    }
+  ],
+  "users": [
+    {
+      "id": "3423",
+      "email": "test-email@gmail.com",
+      "name": "Otilia-Victoria",
+      "passwordHash": "$2b$10$4b9f1i57F6bPVg81OL0PFe7K24xnZeExzUoW9L799XQ2C6WHzavUm",
+      "createdAt": "2025-12-12T14:32:22.277Z"
+    },
+    {
+      "id": "2646",
+      "email": "test@mail.com",
+      "name": "Test1",
+      "passwordHash": "$2b$10$qKDkMWOSBdvvzD60DI4UseRoSbOZ3G6AolJirhDcF6HFR5pHI2f3S",
+      "createdAt": "2025-12-12T14:32:57.459Z"
+    }
+  ]
+}

@@ -1,0 +1,66 @@
+<%- include("../partials/head", { title: "JWT Login" }) %>
+
+<h1>JWT Login</h1>
+
+<div id="msg" class="errors" style="display:none"></div>
+
+<form id="loginForm" class="form">
+  <label>
+    Email
+    <input name="email" type="email" required />
+  </label>
+
+  <label>
+    Password
+    <input name="password" type="password" required />
+  </label>
+
+  <button class="btn" type="submit">Login</button>
+  <a class="btn btn--ghost" href="/jwt/register">Register</a>
+</form>
+
+<script type="module">
+  import { setToken, clearToken } from "/js/jwtClient.js";
+
+  // optional: if already logged in, go to quotes
+  if (localStorage.getItem("quote_journal_token")) {
+    location.href = "/jwt/quotes";
+  }
+
+  const form = document.getElementById("loginForm");
+  const msg = document.getElementById("msg");
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    msg.style.display = "none";
+    msg.textContent = "";
+
+    const formData = new FormData(form);
+    const payload = {
+      email: formData.get("email"),
+      password: formData.get("password")
+    };
+
+    const res = await fetch("/api/auth/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+
+    const data = await res.json().catch(() => null);
+
+    if (!res.ok) {
+      clearToken();
+      msg.style.display = "block";
+      msg.textContent = (data && data.message) ? data.message : "Login failed";
+      return;
+    }
+
+    setToken(data.token);
+    location.href = "/jwt/quotes";
+  });
+</script>
+
+</main>
+</body>
+</html>

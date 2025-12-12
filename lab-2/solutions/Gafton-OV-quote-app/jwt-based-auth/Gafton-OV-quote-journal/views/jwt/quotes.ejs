@@ -1,0 +1,166 @@
+<%- include("../partials/head", { title: "JWT Quote Journal" }) %>
+
+<h1>JWT Quote Journal</h1>
+
+<div class="actions" style="justify-content: space-between;">
+  <div>
+    <a class="btn btn--ghost" href="/quotes">Old (Lab 1) pages</a>
+  </div>
+  <div>
+    <button id="logoutBtn" class="btn btn--danger" type="button">Logout</button>
+  </div>
+</div>
+
+<div id="msg" class="errors" style="display:none"></div>
+
+<section class="card">
+  <h2>Add quote</h2>
+  <form id="addForm" class="form">
+    <label>
+      Quote
+      <textarea name="text" rows="3" required></textarea>
+    </label>
+    <label>
+      Author
+      <input name="author" required />
+    </label>
+    <button class="btn" type="submit">Add</button>
+  </form>
+</section>
+
+<h2 style="margin-top: 18px;">All quotes</h2>
+<ul id="quotesList" class="list"></ul>
+
+<script type="module">
+  import { apiFetch, getToken, clearToken } from "/js/jwtClient.js";
+
+  const msg = document.getElementById("msg");
+  const list = document.getElementById("quotesList");
+  const addForm = document.getElementById("addForm");
+  const logoutBtn = document.getElementById("logoutBtn");
+
+  // Client-side protection:
+  if (!getToken()) location.href = "/jwt/login";
+
+  function showError(text) {
+    msg.style.display = "block";
+    msg.textContent = text;
+  }
+  function clearError() {
+    msg.style.display = "none";
+    msg.textContent = "";
+  }
+
+  logoutBtn.addEventListener("click", () => {
+    clearToken();
+    location.href = "/jwt/login";
+  });
+
+  function renderQuoteItem(q) {
+    const li = document.createElement("li");
+    li.className = "card";
+
+    const top = document.createElement("div");
+    top.className = "card__top";
+
+    const quote = document.createElement("div");
+    quote.className = "quote";
+    quote.textContent = `“${q.text}”`;
+
+    const meta = document.createElement("div");
+    meta.className = "meta";
+    meta.textContent = `— ${q.author}`;
+
+    const date = document.createElement("div");
+    date.className = "date";
+    date.textContent = new Date(q.createdAt).toLocaleString();
+
+    top.appendChild(quote);
+    top.appendChild(meta);
+    top.appendChild(date);
+
+    const actions = document.createElement("div");
+    actions.className = "actions";
+
+    const editBtn = document.createElement("button");
+    editBtn.className = "btn btn--ghost";
+    editBtn.type = "button";
+    editBtn.textContent = "Edit";
+
+    editBtn.addEventListener("click", async () => {
+      const newText = prompt("Edit quote text:", q.text);
+      if (newText === null) return;
+
+      const newAuthor = prompt("Edit author:", q.author);
+      if (newAuthor === null) return;
+
+      clearError();
+      const res = await apiFetch(`/api/quotes/${q.id}`, {
+        method: "PUT",
+        body: JSON.stringify({ text: newText.trim(), author: newAuthor.trim() })
+      });
+
+      if (!res.ok) return showError("Failed to update quote");
+      await loadQuotes();
+    });
+
+    const delBtn = document.createElement("button");
+    delBtn.className = "btn btn--danger";
+    delBtn.type = "button";
+    delBtn.textContent = "Delete";
+
+    delBtn.addEventListener("click", async () => {
+      if (!confirm("Delete this quote?")) return;
+      clearError();
+      const res = await apiFetch(`/api/quotes/${q.id}`, { method: "DELETE" });
+      if (!res.ok) return showError("Failed to delete quote");
+      await loadQuotes();
+    });
+
+    actions.appendChild(editBtn);
+    actions.appendChild(delBtn);
+
+    li.appendChild(top);
+    li.appendChild(actions);
+    return li;
+  }
+
+  async function loadQuotes() {
+    clearError();
+    list.innerHTML = "";
+
+    const res = await apiFetch("/api/quotes", { method: "GET" });
+    if (!res.ok) return showError("Could not load quotes (are you logged in?)");
+
+    res.data.forEach(q => list.appendChild(renderQuoteItem(q)));
+  }
+
+  addForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    clearError();
+
+    const formData = new FormData(addForm);
+    const text = (formData.get("text") || "").trim();
+    const author = (formData.get("author") || "").trim();
+
+    if (text.length < 3) return showError("Quote must be at least 3 characters.");
+    if (author.length < 2) return showError("Author must be at least 2 characters.");
+
+    const res = await apiFetch("/api/quotes", {
+      method: "POST",
+      body: JSON.stringify({ text, author })
+    });
+
+    if (!res.ok) return showError("Failed to add quote");
+
+    addForm.reset();
+    await loadQuotes();
+  });
+
+  // initial load
+  loadQuotes();
+</script>
+
+</main>
+</body>
+</html>

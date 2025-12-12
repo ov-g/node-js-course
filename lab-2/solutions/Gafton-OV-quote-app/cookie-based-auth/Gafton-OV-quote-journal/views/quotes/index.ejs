@@ -1,0 +1,31 @@
+<%- include("../partials/head", { title: "All Quotes" }) %>
+
+<h1>All Quotes</h1>
+
+<% if (!quotes.length) { %>
+  <p>No quotes yet. Add your first one.</p>
+<% } %>
+
+<ul class="list">
+  <% quotes.forEach(q => { %>
+    <li class="card">
+      <div class="card__top">
+        <div class="quote">“<%= q.text %>”</div>
+        <div class="meta">— <%= q.author %></div>
+        <div class="date"><%= new Date(q.createdAt).toLocaleString() %></div>
+      </div>
+
+      <div class="actions">
+        <a class="btn" href="/quotes/<%= q.id %>">View</a>
+        <a class="btn btn--ghost" href="/quotes/<%= q.id %>/edit">Edit</a>
+        <form method="POST" action="/quotes/<%= q.id %>?_method=DELETE">
+          <button class="btn btn--danger" type="submit">Delete</button>
+        </form>
+      </div>
+    </li>
+  <% }) %>
+</ul>
+
+</main>
+</body>
+</html>
